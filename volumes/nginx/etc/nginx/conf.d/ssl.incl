@@ -1,0 +1,28 @@
+# Specify the TLS versions
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+
+# Ciphersuites recommendation from the chiper.li
+# Use this chipersuites to get 100 points of the SSLabs test
+# Some device will not support
+#ssl_ciphers "ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:E$
+
+# Mozilla Ciphersuits Recommendation
+# Use this for all devices supports
+ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POL$
+
+# Use the DHPARAM key and ECDH curve >= 256bit
+ssl_ecdh_curve secp384r1;
+
+server_tokens off;
+ssl_session_tickets off;
+
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 10m;
+ssl_buffer_size 4k;
+
+# XSS Protection for Nginx web server
+add_header X-Frame-Options DENY;
+add_header X-XSS-Protection "1; mode=block";
+add_header X-Content-Type-Options nosniff;
+add_header X-Robots-Tag none;

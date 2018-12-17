@@ -42,9 +42,7 @@ def get_ssl_settings(domains, site, include):
 	#ssl cert properties
 	https.add_property('ssl_certificate', '/etc/letsencrypt/live/{}/fullchain.pem'.format(domains[0]))
 	https.add_property('ssl_certificate_key', '/etc/letsencrypt/live/{}/privkey.pem'.format(domains[0]))
-	https.add_property('ssl_session_cache', 'shared:SSL:10m')
-	https.add_property('ssl_session_timeout', '10m')
-	https.add_property('ssl_buffer_size', '4k')
+	https.add_property('include', os.path.join('conf.d', 'ssl.incl'))
 
 	s.add_property('server', https)
 	return s
