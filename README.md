@@ -25,7 +25,7 @@ echo "deny all;" >> /var/lib/docker/compose/base/volumes/nginx/etc/nginx/conf.d/
 * Start containers.
 
 ```bash
-docker network create backend
+docker network create frontend
 cd /var/lib/docker/compose/base
 docker-compose up -d
 ```
