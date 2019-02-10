@@ -15,7 +15,8 @@ def get_no_ssl_settings(domains):
 	http.add_property('server', s)
 	return http
 
-def get_ssl_settings(domains, site, include):
+#if not redirect - proxy pass
+def get_ssl_settings(domains, site, include, redirect):
 	s = n.nginx_object()
 	#http part - redirect to https
 	http = n.nginx_object()
@@ -29,13 +30,16 @@ def get_ssl_settings(domains, site, include):
 	https.add_property('server_name', args.d)
 	#certbot location
 	https.add_property('location', ['~ /.well-known/acme-challenge/', n.nginx_object('root', '/etc/letsencrypt/challenges/')])
-	#proxy location
+	#proxy or redirect location
 	l = n.nginx_object()
-	l.add_property('proxy_pass', site)
-	l.add_property('proxy_set_header', ['X-Real-Ip', '$remote_addr'])
-	l.add_property('proxy_set_header', ['X-Forwarded-For', '$proxy_add_x_forwarded_for'])
-	l.add_property('proxy_set_header', ['Host', '$http_host'])
-	l.add_property('proxy_redirect', 'off')
+	if redirect:
+		l.add_property('return', '301 ' + site)
+	else:
+		l.add_property('proxy_pass', site)
+		l.add_property('proxy_set_header', ['X-Real-Ip', '$remote_addr'])
+		l.add_property('proxy_set_header', ['X-Forwarded-For', '$proxy_add_x_forwarded_for'])
+		l.add_property('proxy_set_header', ['Host', '$http_host'])
+		l.add_property('proxy_redirect', 'off')
 	if include:
 		l.add_property('include', [os.path.join('conf.d', i) for i in include])
 	https.add_property('location', ['/', l])
@@ -59,8 +63,9 @@ class readable_dir(argparse.Action):
 
 parser = argparse.ArgumentParser(description='Add site to nginx')
 parser.add_argument('-d', nargs='+', type=str, help='domains')
-parser.add_argument('-p', nargs=1, type=str, help='proxy pass')
+parser.add_argument('-u', nargs=1, type=str, help='proxy pass (by default) or redirect url')
 parser.add_argument('-i', nargs='*', type=str, help='include file')
+parser.add_argument('-r', action='store_true', help='redirect flag: redirect if present, proxy pass otherwise')
 args = parser.parse_args()
 
 conf_file_name = args.d[0] + '.conf'
@@ -85,6 +90,6 @@ if return_code:
 
 conf_file.truncate(0)
 conf_file.seek(0)
-conf_file.write(s.to_string(get_ssl_settings(args.d, args.p, args.i)))
+conf_file.write(s.to_string(get_ssl_settings(args.d, args.u[0], args.i, args.r)))
 conf_file.flush()
 subprocess.call('docker exec nginx nginx -s reload', shell=True)

@@ -32,12 +32,13 @@ docker-compose up -d
 
 * Add host. Do not forget to set the A record for your domain to this server. Do it for all sites that you need.  
 "i" is optional if you want to restrict access.  
-"p" is the proxy pass url.  
+"u" is proxy pass (by default) or redirect url.  
 "d" is you domain name. You can specify many for one host. ```-d docker.example.ru www.docker.example.ru``` for example
+"r" use redirection instead of proxy
 
 ```bash
 chmod +x scripts/*
-scripts/add_host.py -d docker.example.ru -i acl.incl -p http://portainer:9000/
+scripts/add_host.py -d docker.example.ru -i acl.incl -u http://portainer:9000/
 ```
 
 * Go to docker.example.ru in you browser.
