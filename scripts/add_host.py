@@ -38,6 +38,8 @@ def get_ssl_settings(domains, site, include, redirect):
 		l.add_property('proxy_pass', site)
 		l.add_property('proxy_set_header', ['X-Real-Ip', '$remote_addr'])
 		l.add_property('proxy_set_header', ['X-Forwarded-For', '$proxy_add_x_forwarded_for'])
+		l.add_property('proxy_set_header', ['X-Forwarded-Proto', '$scheme'])
+		l.add_property('proxy_set_header', ['X-Forwarded-Host', 'http_host'])
 		l.add_property('proxy_set_header', ['Host', '$http_host'])
 		l.add_property('proxy_redirect', 'off')
 	if include:
