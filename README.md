@@ -47,13 +47,13 @@ scripts/add_host.py -d docker.example.ru -i acl.incl -u http://portainer:9000/
 
 ```bash
 sudo crontab -e
-* 12 * * 7 /var/lib/docker/compose/base/scripts/renew.sh
+0 12 * * 7 /var/lib/docker/compose/base/scripts/renew.sh
 ```
 
 or 
 
 ```bash
-(crontab -l; echo "* 12 * * 7 /var/lib/docker/compose/base/scripts/renew.sh" ) | crontab -
+(crontab -l; echo "0 12 * * 7 /var/lib/docker/compose/base/scripts/renew.sh" ) | crontab -
 ```
 
 ## How to ...
